@@ -6,7 +6,7 @@
 /*   By: magouin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/17 17:41:08 by magouin           #+#    #+#             */
-/*   Updated: 2016/05/18 14:30:10 by magouin          ###   ########.fr       */
+/*   Updated: 2016/05/18 18:44:09 by magouin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,14 @@ int 		ft_flags2(char **str, struct s_flags *flags, int *x)
 	else if (str[*x][1] == 'a')
 		flags->a = 1;
 	else if (str[*x][1] == 'n')
+	{
 		flags->n = 1;
+		(*x)++;
+		if (ft_isdigit(str[*x]))
+			flags->nnbr = ft_atoi(str[*x]);
+		else
+			return (0);
+	}
 	else
 		return (0);
 	return (1);
@@ -77,8 +84,7 @@ char		**ft_init_flags(char **str, struct s_flags *flags, int ac)
 		if (str[x][0] != '-')
 			ft_putstr_fd(2, "Invalide File\n", NULL);
 		else if (!(ft_flags(str, flags, &x)))
-			ft_putstr_fd(2, "Usage: ./corewar [-d N -s N -v N | -b | -n] [-a]",
-" <champion1.cor> <...>", NULL);
+			ft_usage();
 		else
 		{
 			x++;
@@ -89,7 +95,7 @@ char		**ft_init_flags(char **str, struct s_flags *flags, int ac)
 	ptr = str + x;
 	while (x < ac)
 	{
-		if (x + 4 < ac)
+		if (x + MAX_PLAYERS < ac)
 			ft_putstr_fd(2, "Too many champions\n", NULL);
 		else if (ft_strcmp(ft_strrchr(str[x], '.'), ".cor") != 0)
 			ft_putstr_fd(2, "Invalide File\n", NULL);
