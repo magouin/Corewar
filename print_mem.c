@@ -22,6 +22,7 @@ void	print_hex(unsigned char c)
 		ft_putnbr(c % 16);
 	else 
 		ft_putchar('a' + (c % 16 - 10));
+	ft_putchar(' ');
 }
 
 int		ft_sqrt(int c)
@@ -39,11 +40,11 @@ void	ft_print_mem(unsigned char *str)
 	int		x;
 
 	x = 0;
-	ft_putstr("\033[2J\033[1,1H");
+	//ft_putstr("\033[2J\033[1,1H");
 	while (x < MEM_SIZE)
 	{
 		print_hex(str[x]);
-		if (x % ft_sqrt(MEM_SIZE) == 0)
+		if ((x + 1) % ft_sqrt(MEM_SIZE) == 0)
 			ft_putchar('\n');
 		x++;
 	}

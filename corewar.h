@@ -22,6 +22,7 @@ typedef struct			s_player
 	char				*name;
 	char				*comment;
 	unsigned char		*prog;
+	int					len_prog;
 	int					nbr;
 	struct s_player		*next;
 }						t_player;
@@ -53,5 +54,7 @@ struct					s_flags
 
 char					**ft_init_flags(char **s, struct s_flags **f, int a);
 void					ft_usage(void);
+void					arena(t_player *champ);
+void					ft_print_mem(unsigned char *str);
 
 #endif

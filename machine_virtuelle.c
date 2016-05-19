@@ -12,18 +12,18 @@
 
 #include "corewar.h"
 
-void	ft_len_prog(int fd, int *x, int *len_prog, int *red)
+void	ft_len_prog(int fd, int *x, t_player *p, int *red)
 {
 	unsigned char	str[5];
 
-	*len_prog = 0;
+	p->len_prog = 0;
 	read(fd, str, 4);
 	read(fd, str, 4);
 	str[4] = '\0';
 	*x = 0;
 	while (*x < 4)
 	{
-		*len_prog = *len_prog * 256 + (unsigned char)str[*x];
+		p->len_prog = p->len_prog * 256 + (unsigned char)str[*x];
 		(*x)++;
 	}
 	*x = 0;
@@ -54,23 +54,19 @@ int		ft_size(int fd, t_player *player, char *av, struct s_flags *flags)
 {
 	char			buff[43];
 	unsigned char	*tmp;
-	int				len_prog;
 	int				red;
 	int				x;
 
-	player = ft_player(player, flags);
 	read(fd, player->name, PROG_NAME_LENGTH);
 	buff[42] = '\0';
-	ft_len_prog(fd, &x, &len_prog, &red);
+	ft_len_prog(fd, &x, player, &red);
 	read(fd, player->comment, COMMENT_LENGTH);
-	while ((red = read(fd, buff, 42)))
-	{
-		x += red;
-		tmp = (unsigned char *)ft_strjoin(buff, (char*)player->prog);
-		free(player->prog);
-		player->prog = tmp;
-	}
-	if (x - 4 != len_prog)
+	read(fd, buff, 4);
+	player->prog = malloc(player->len_prog);
+	red = read(fd, (char *)player->prog, player->len_prog);
+	x = 0;
+	red += read(fd, buff, 42);
+	if (red != player->len_prog)
 	{
 		ft_putstr_fd(2, "Error: File ", av,
 	" has a code size that differ from what its header says\n", NULL);
@@ -145,7 +141,7 @@ int		main(int ac, char **av)
 	!(str[x]) ? ft_usage() : 0;
 	while (str[x])
 	{
-		ft_player(player, flags);
+		player = ft_player(player, flags);
 		if ((fd = open(str[x], O_RDONLY)) < 0)
 		{
 			ft_putstr_fd(2, "Can't read source file ", str[x], "\n", NULL);
@@ -155,5 +151,6 @@ int		main(int ac, char **av)
 			return (0);
 		x++;
 	}
+	arena(player);
 	return (0);
 }
