@@ -47,11 +47,11 @@ struct					s_flags
 	int					vnbr;
 	int					b;
 	int					g;
-	int					n;
-	int					nnbr;
+	int					n[MAX_PLAYERS];
+	int					nnbr[MAX_PLAYERS];
 }						;
 
-char					**ft_init_flags(char **s, struct s_flags *f, int a);
+char					**ft_init_flags(char **s, struct s_flags **f, int a);
 void					ft_usage(void);
 
 #endif
