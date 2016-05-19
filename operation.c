@@ -21,38 +21,67 @@ size_t	ft_getnumber(unsigned char *str, int ptr, int size)
 	rez = 0;
 	while (x < size)
 	{
-		rez = rez * 256 + str[(ptr + x + 1) % MEM_SIZE];
+		rez = rez * 256 + str[(ptr + x) % MEM_SIZE];
 		x++;
 	}
 	return (rez);
 }
 
-void	ft_sti(unsigned char *str, int ptr, t_process *process)
+void	ft_tmp_1(unsigned char *str, int ptr, int rez, int *size)
+{
+	int patern;
+	int mask[4];
+
+	mask[0] = 0xff000000;
+	mask[1] = 0xff0000;
+	mask[2] = 0xff00;
+	mask[3] = 0xff;
+	patern = ft_getnumber(str, ptr + 2 + size[0], size[1])
+	+ ft_getnumber(str, ptr + 2 + size[0] + size[1], size[2]);
+	str[ptr + patern] = (rez & mask[0]) >> 24;
+	str[ptr + patern + 1] = (rez & mask[1]) >> 16;
+	str[ptr + patern + 2] = (rez & mask[2]) >> 8;
+	str[ptr + patern + 3] = (rez & mask[3]);
+	ft_printf("ptr + patern + 3 = %d\n", ptr + patern + 3);
+	ft_printf("0 = %d\n", (rez & mask[0]) >> 24);
+	ft_printf("1 = %d\n", (rez & mask[1]) >> 16);
+	ft_printf("2 = %d\n", (rez & mask[2]) >> 8);
+	ft_printf("3 = %d\n", (rez & mask[3]));
+}
+
+void	ft_sti(unsigned char *str, int ptr, t_process **process)
 {
 	unsigned char	m;
 	int				x;
 	int				rez;
 	int				size[3];
+	int				tmp;
 
 	x = 0;
-	m = 0b11000000;
+	m = 192;
+	tmp = (str[(ptr + 1) % MEM_SIZE] & m) >> (6 - 2 * x);
 	while (x < 3)
 	{
-		if ((str[(ptr + 1) % MEM_SIZE] & m) >> (6 - 2 * x) == 3)
-			size[x] = IND_SIZE;
-		else if ((str[(ptr + 1) % MEM_SIZE] & m) >> (6 - 2 * x) == 2)
-			size[x] = DIR_SIZE;
-		else if ((str[(ptr + 1) % MEM_SIZE] & m) >> (6 - 2 * x) == 1)
-			size[x] = REG_SIZE;
+		if (((str[(ptr + 1) % MEM_SIZE] & m) >> (6 - 2 * x)) == 3)
+			size[x] = T_IND;
+		else if (((str[(ptr + 1) % MEM_SIZE] & m) >> (6 - 2 * x)) == 2)
+			size[x] = T_DIR;
+		else if (((str[(ptr + 1) % MEM_SIZE] & m) >> (6 - 2 * x)) == 1)
+			size[x] = T_REG;
+		else
+			size[x] = 0;
 		m = m >> 2;
 		x++;
 	}
-	rez = ft_getnumber(str, (ptr + 2) % MEM_SIZE, size[0]);
-	str[(ptr + (ft_getnumber(str, (ptr + 3) % MEM_SIZE, size[1]) +
-ft_getnumber(str, (ptr + 4) % MEM_SIZE, size[2])) % IDX_MOD) % MEM_SIZE] = rez;
-	process->pc = (process->pc + ft_getnumber(str,
-(ptr + 2) % MEM_SIZE, size[0]) + ft_getnumber(str, (ptr + 3) % MEM_SIZE,
-size[1]) + ft_getnumber(str, (ptr + 4) % MEM_SIZE, size[2]) + 2) % MEM_SIZE;
+	m = 12;
+	x++;
+	if (tmp != 1 || ((str[(ptr + 1) % MEM_SIZE] & m) >> (6 - 2 * x)) == 3)
+	{
+		(*process)->pc = ((*process)->pc + size[0] + size[1] + size[2] + 2) % MEM_SIZE;
+		return ;
+	}
+	ft_tmp_1(str, ptr, (*process)->reg[(ft_getnumber(str, ptr + 2, size[0]) - 1) % REG_NUMBER], size); 
+	(*process)->pc = ((*process)->pc + size[0] + size[1] + size[2] + 2) % MEM_SIZE;
 }
 
 void	ft_fork(unsigned char *str, int ptr, t_process **proc, t_process *par)
@@ -66,14 +95,13 @@ void	ft_fork(unsigned char *str, int ptr, t_process **proc, t_process *par)
 	new->cycle = 0;
 	new->carry = par->carry;
 	new->pc = (par->pc +
-		(ft_getnumber(str, ptr, IND_SIZE) % IDX_MOD)) % MEM_SIZE;
-	new->reg = malloc(sizeof(void*) * REG_NUMBER);
+		(ft_getnumber(str, ptr + 1, T_IND) % IDX_MOD)) % MEM_SIZE;
+	new->reg = malloc(sizeof(int) * REG_NUMBER);
 	while (x < REG_NUMBER)
 	{
-		new->reg[x] = malloc(REG_SIZE);
 		new->reg[x] = par->reg[x];
 		x++;
 	}
-	par->pc = (par->pc + IND_SIZE + 1) % MEM_SIZE;
+	par->pc = (par->pc + T_IND + 1) % MEM_SIZE;
 	*proc = new;
 }

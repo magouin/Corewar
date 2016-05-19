@@ -6,7 +6,7 @@
 /*   By: arobin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/19 14:21:25 by arobin            #+#    #+#             */
-/*   Updated: 2016/05/19 14:21:26 by arobin           ###   ########.fr       */
+/*   Updated: 2016/05/19 21:31:31 by magouin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,9 @@ unsigned char		*mv_creation(void)
 {
 	unsigned char	*arena;
 
-	if ((arena = (unsigned char *)malloc(sizeof(unsigned char) * MEM_SIZE + 1)) == NULL)
+	if ((arena = (unsigned char *)malloc(sizeof(unsigned char) * MEM_SIZE)) == NULL)
 		return (NULL);
 	ft_bzero(arena, MEM_SIZE);
-	arena[MEM_SIZE + 1] = '\0';
 	return (arena);
 }
 
@@ -28,7 +27,7 @@ void				write_champ(unsigned char *start, t_player *champ)
 	int				i;
 
 	i = 0;
-	while(i < 0x4d)
+	while(i < champ->len_prog)
 	{
 		start[i] = champ->prog[i];
 		i++;
@@ -66,14 +65,14 @@ void				arena(t_player *champ)
 	pro->pc = 0;
 	pro->next = NULL;
 	pro->carry = 1;
-	pro->reg = malloc(sizeof(void*) * REG_NUMBER);
+	pro->reg = malloc(sizeof(int) * REG_NUMBER);
 	while (x < REG_NUMBER)
 	{
-		pro->reg[x] = malloc(REG_SIZE);
 		pro->reg[x] = x;
 		x++;
 	}
-	ft_fork(arena, 0, &pro, pro);
-	arena[pro->pc] = 5;
+	pro->reg[0] = 63;
+	ft_sti(arena, 0, &pro);
+	arena[pro->pc] = 255;
 	ft_print_mem(arena);
 }

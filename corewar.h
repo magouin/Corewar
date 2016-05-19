@@ -30,7 +30,7 @@ typedef struct			s_player
 typedef struct			s_process
 {
 	int					cycle;
-	void				**reg;
+	int					*reg;
 	int					carry;
 	struct s_process	*next;
 	int					pc;
@@ -52,6 +52,7 @@ struct					s_flags
 	int					nnbr[MAX_PLAYERS];
 }						;
 
+void					ft_sti(unsigned char *str, int ptr, t_process **process);
 char					**ft_init_flags(char **s, struct s_flags **f, int a);
 void					ft_usage(void);
 void					arena(t_player *champ);
