@@ -55,6 +55,7 @@ struct					s_flags
 char					**ft_init_flags(char **s, struct s_flags **f, int a);
 void					ft_usage(void);
 void					arena(t_player *champ);
+void					ft_fork(unsigned char *str, int ptr, t_process **proc, t_process *par);
 void					ft_print_mem(unsigned char *str);
 
 #endif

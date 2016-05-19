@@ -39,9 +39,12 @@ void				arena(t_player *champ)
 {
 	unsigned char	*arena;
 	t_player		*current_champ;
+	t_process		*pro;
 	int				i;
+	int				x;
 
 	i = 1;
+	x = 0;
 	ft_printf("c = %d\n", champ->prog[i]);
 	current_champ = champ;
 	arena = mv_creation();
@@ -57,5 +60,20 @@ void				arena(t_player *champ)
 		}
 		write_champ(&arena[(MEM_SIZE / MAX_PLAYERS) * i], current_champ);
 	}
+	ft_print_mem(arena);
+	ft_putchar('\n');
+	pro = malloc(sizeof(t_process));
+	pro->pc = 0;
+	pro->next = NULL;
+	pro->carry = 1;
+	pro->reg = malloc(sizeof(void*) * REG_NUMBER);
+	while (x < REG_NUMBER)
+	{
+		pro->reg[x] = malloc(REG_SIZE);
+		pro->reg[x] = x;
+		x++;
+	}
+	ft_fork(arena, 0, &pro, pro);
+	arena[pro->pc] = 5;
 	ft_print_mem(arena);
 }

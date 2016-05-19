@@ -55,14 +55,14 @@ ft_getnumber(str, (ptr + 4) % MEM_SIZE, size[2])) % IDX_MOD) % MEM_SIZE] = rez;
 size[1]) + ft_getnumber(str, (ptr + 4) % MEM_SIZE, size[2]) + 2) % MEM_SIZE;
 }
 
-void	ft_fork(unsigned char *str, int ptr, t_process *proc, t_process *par)
+void	ft_fork(unsigned char *str, int ptr, t_process **proc, t_process *par)
 {
 	t_process	*new;
 	int			x;
 
 	x = 0;
 	new = malloc(sizeof(t_process));
-	new->next = proc;
+	new->next = *proc;
 	new->cycle = 0;
 	new->carry = par->carry;
 	new->pc = (par->pc +
@@ -75,4 +75,5 @@ void	ft_fork(unsigned char *str, int ptr, t_process *proc, t_process *par)
 		x++;
 	}
 	par->pc = (par->pc + IND_SIZE + 1) % MEM_SIZE;
+	*proc = new;
 }
