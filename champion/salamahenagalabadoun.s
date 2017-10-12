@@ -1,27 +1,25 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
+#    salamahenagalabadoun.s                             :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: magouin <marvin@42.fr>                     +#+  +:+       +#+         #
+#    By: gjestin <gjestin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2017/10/12 17:02:17 by magouin           #+#    #+#              #
-#    Updated: 2017/10/12 18:25:54 by magouin          ###   ########.fr        #
+#    Created: 2014/02/21 22:08:42 by gjestin           #+#    #+#              #
+#    Updated: 2014/02/25 21:02:17 by gjestin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-all:
-	make -C assembly
-	make -C vm
+.name "salamahenagalabadoun"
+.comment "sussKBO hin hin"
 
-fclean:
-	make fclean -C assembly
-	make fclean -C vm
-
-clean:
-	make clean -C assembly
-	make clean -C vm
-
-re:
-	make re -C assembly
-	make re -C vm
+ld		32, r3
+ld		4, r4
+ld		190, r5
+st		r1, 6
+loop:
+live	%666
+sti		r5, r5, r3
+add		r3, r4, r5
+ld		%0, r16
+zjmp	%:loop

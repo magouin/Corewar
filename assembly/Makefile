@@ -6,40 +6,48 @@
 #    By: magouin <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/05/27 13:24:03 by magouin           #+#    #+#              #
-#    Updated: 2017/10/12 18:19:04 by magouin          ###   ########.fr        #
+#    Updated: 2017/10/12 18:24:42 by magouin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME	= ../corewar
+NAME	= ../asm
 CC		= gcc
-WFLAGS	= -Wall -Wextra -Werror
+WFLAGS	= -Wall -Wextra -Werror -g
 OPTI	= -I
 
-LS      = ls -1
+LS		= ls -1
 GREP	= grep
 MKDIR	= mkdir -p
 RM		= rm -rf
 
-DSRC	= src
-DLIB	= libft
-DINC	= inc
-DINCLIB	= inc \
+LFLAGS 		= -Llib/ -lft -lmlx
+DSRC		= src
+DLIB		= libft
+DLIBX		= minilibx
+DINC		= inc
+DINCLIB		= inc \
 		  		  $(DLIB)/inc
+DINCLIBX	= inc \
+		  		  $(DLIBX)/inc
 DOBJ	= obj
 
-FSRC	:= $(shell $(LS) $(DSRC) | $(GREP) \.c$)
-FOBJ	:= $(FSRC:.c=.o)
-LIBFT	:= libft.a
+FSRC		:= $(shell $(LS) $(DSRC) | $(GREP) \.c$)
+FOBJ		:= $(FSRC:.c=.o)
+LIBFT		:= libft.a
+MINILIBX	:= libmlx.a
 
-FSRC	:= $(addprefix $(DSRC)/, $(FSRC))
-FOBJ	:= $(addprefix $(DOBJ)/, $(FOBJ))
-FINCLIB	:= $(addprefix $(OPTI) , $(DINCLIB))
-LIBFT	:= $(addprefix $(DLIB)/, $(LIBFT))
+FSRC		:= $(addprefix $(DSRC)/, $(FSRC))
+FOBJ		:= $(addprefix $(DOBJ)/, $(FOBJ))
+FINCLIB		:= $(addprefix $(OPTI) , $(DINCLIB))
+FINCLIBX	:= $(addprefix $(OPTI) , $(DINCLIBX))
+LIBFT		:= $(addprefix $(DLIB)/, $(LIBFT))
+MINILIBX	:= $(addprefix $(DLIBX)/, $(MINILIBX))
+INC 		= $(addprefix -I,$(DINC))
 
 all: libft $(FOBJ) $(NAME)
 
 $(NAME): $(LIBFT) $(FOBJ)
-		$(CC) $(WFLAGS) $(FOBJ) $(LIBFT) -lncurses -o $@
+		$(CC) $(WFLAGS) $(INC) $(FOBJ) $(LIBFT) -o $@ -framework OpenGL -framework AppKit
 
 $(DOBJ)/%.o: $(DSRC)/%.c $(DINC)
 		@$(MKDIR) $(DOBJ)
