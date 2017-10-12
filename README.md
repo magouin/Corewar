@@ -18,10 +18,15 @@ $> ./asm <nameofthefile>.s
 #After compiled asm file you can fight your programs with ./corewar
 #To get the usage juste run ./corewar 
 
-##############################################################################################
+#######################################################################################
 
 Example:
 
-$> ./asm champion/Kappa.s                                  #Created .cor of the Kappa.s file
-$> ./asm champion/Asombra.s                                #Created .cor of the Asombra.s file
-$> ./corewar -g champion/Kappa.cor champion/Asombra.cor    #Run ncurse to see the fight between Kappa and Asombra
+#Created .cor of the Kappa.s file
+  $> ./asm champion/Kappa.s
+ 
+#Created .cor of the Asombra.s file
+  $> ./asm champion/Asombra.s
+
+#Run ncurse to see the fight between Kappa and Asombra
+  $> ./corewar -g champion/Kappa.cor champion/Asombra.cor
